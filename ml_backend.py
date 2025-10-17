@@ -187,18 +187,48 @@ class MLBackend:
         return descriptions.get(feature_name.lower(), feature_name.replace('_', ' ').title())
     
     def train_model(self, config: Dict[str, Any]) -> Dict[str, Any]:
-        """Train ML model with advanced techniques"""
+        """Train ML model with advanced techniques
+        Supports optional keys in config:
+        - datasetPath: explicit path to dataset file (csv/json)
+        - targetColumn: name of target column (defaults to 'defects')
+        """
         try:
             model_id = config['modelId']
-            algorithm = config['algorithm']
+            # Normalize algorithm names from UI to internal identifiers
+            raw_algorithm = config['algorithm']
+            algo_map = {
+                'randomforest': 'random_forest',
+                'random_forest': 'random_forest',
+                'rf': 'random_forest',
+                'xgboost': 'xgboost',
+                'svm': 'svm',
+                'supportvectormachine': 'svm',
+                'neuralnetwork': 'neural_network',
+                'neural_network': 'neural_network',
+                'mlp': 'neural_network',
+                'ensemble': 'ensemble',
+                'balancedrandomforest': 'ensemble'
+            }
+            key = str(raw_algorithm).lower().replace(' ', '_')
+            algorithm = algo_map.get(key, 'random_forest')
             dataset_id = config['datasetId']
             hyperparameters = config.get('hyperparameters', {})
             
-            # Load dataset (in real implementation, get from storage)
-            df = pd.read_csv('data/nasa_defect_dataset.csv')
+            # Load dataset
+            dataset_path = config.get('datasetPath') or config.get('dataset_file')
+            if dataset_path:
+                if str(dataset_path).lower().endswith('.csv'):
+                    df = pd.read_csv(dataset_path)
+                elif str(dataset_path).lower().endswith('.json'):
+                    df = pd.read_json(dataset_path)
+                else:
+                    raise ValueError("Unsupported file format for datasetPath")
+            else:
+                # Fallback to default dataset bundled with the app
+                df = pd.read_csv('data/nasa_defect_dataset.csv')
             
             # Prepare features and target
-            target_col = 'defects'
+            target_col = config.get('targetColumn') or 'defects'
             X = df.drop(columns=[target_col])
             y = df[target_col]
             
@@ -453,7 +483,8 @@ class MLBackend:
             return {}
         
         if selector is not None:
-            selected_features = feature_names[selector.get_support()]
+            # Ensure boolean mask indexing works on array type
+            selected_features = np.array(feature_names)[selector.get_support()]
             return dict(zip(selected_features, importances))
         
         return dict(zip(feature_names, importances))
