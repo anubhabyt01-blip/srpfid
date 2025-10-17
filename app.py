@@ -164,6 +164,7 @@ def train_model():
     try:
         data = request.json
         
+        # 1) Create model record with training status
         conn = get_db_connection()
         cur = conn.cursor()
         model_id = str(uuid.uuid4())
@@ -179,11 +180,90 @@ def train_model():
             'training'
         ))
         conn.commit()
-        
+
+        # 2) Load dataset metadata for training
+        cur.execute('SELECT * FROM datasets WHERE id = ?', (data.get('datasetId'),))
+        dataset_row = cur.fetchone()
+        if not dataset_row:
+            conn.close()
+            return jsonify({'error': 'Dataset not found'}), 404
+
+        dataset_path = dataset_row['file_path']
+        target_column = dataset_row['target_column'] or 'defects'
+
+        # 3) Perform training synchronously
+        train_config = {
+            'modelId': model_id,
+            'algorithm': data.get('algorithm'),
+            'datasetId': data.get('datasetId'),
+            'hyperparameters': data.get('hyperparameters', {}),
+            'datasetPath': dataset_path,
+            'targetColumn': target_column
+        }
+        result = ml_backend.train_model(train_config)
+        if 'error' in result:
+            # Mark model as failed
+            cur.execute('UPDATE models SET training_status = ? WHERE id = ?', ('failed', model_id))
+            conn.commit()
+            cur.execute('SELECT * FROM models WHERE id = ?', (model_id,))
+            model = dict(cur.fetchone())
+            conn.close()
+            return jsonify({'error': result['error'], 'model': model}), 500
+
+        # 4) Persist metrics and model artifacts
+        cur.execute('''
+            UPDATE models
+            SET training_status = ?,
+                accuracy = ?,
+                precision = ?,
+                recall = ?,
+                f1_score = ?,
+                mcc = ?,
+                confusion_matrix = ?,
+                feature_importance = ?,
+                model_path = ?
+            WHERE id = ?
+        ''', (
+            'completed',
+            result.get('accuracy'),
+            result.get('precision'),
+            result.get('recall'),
+            result.get('f1Score'),
+            result.get('mcc'),
+            json.dumps(result.get('confusionMatrix')) if result.get('confusionMatrix') is not None else None,
+            json.dumps(result.get('featureImportance')) if result.get('featureImportance') is not None else None,
+            result.get('modelPath'),
+            model_id
+        ))
+        conn.commit()
+
+        # 5) Emit monitoring metrics at training end
+        metrics_payload = [
+            ('f1_score', result.get('f1Score')),
+            ('accuracy', result.get('accuracy')),
+            ('precision', result.get('precision')),
+            ('recall', result.get('recall')),
+            ('mcc', result.get('mcc'))
+        ]
+        for metric_type, value in metrics_payload:
+            if value is None:
+                continue
+            cur.execute(
+                'INSERT INTO monitoring_metrics (id, source, metric_type, value, metadata) VALUES (?, ?, ?, ?, ?)',
+                (
+                    str(uuid.uuid4()),
+                    f"model:{model_id}",
+                    metric_type,
+                    float(value),
+                    json.dumps({'datasetId': data.get('datasetId'), 'modelName': data.get('name')})
+                )
+            )
+        conn.commit()
+
+        # 6) Return updated model record
         cur.execute('SELECT * FROM models WHERE id = ?', (model_id,))
         model = dict(cur.fetchone())
         conn.close()
-        
         return jsonify(model)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
