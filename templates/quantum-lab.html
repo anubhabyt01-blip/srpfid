@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Lab - ML Research</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>ML Research</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/data-upload">Data Upload</a></li>
+                <li><a href="/model-training">Model Training</a></li>
+                <li><a href="/quantum-lab" class="active">Quantum Lab</a></li>
+                <li><a href="/federated-learning">Federated Learning</a></li>
+                <li><a href="/monitoring">Monitoring</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Quantum Machine Learning Lab</h1>
+                <p>Experimental quantum ML algorithms</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Create Quantum Experiment</h3>
+                </div>
+                <div class="card-body">
+                    <form id="quantum-form">
+                        <div class="form-group">
+                            <label>Experiment Name</label>
+                            <input type="text" id="quantum-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Algorithm</label>
+                            <select id="quantum-algorithm">
+                                <option value="QSVM">Quantum SVM</option>
+                                <option value="VQC">Variational Quantum Classifier</option>
+                                <option value="QNN">Quantum Neural Network</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Qubits</label>
+                            <input type="number" id="qubits" min="2" max="10" value="4">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Run Experiment</button>
+                    </form>
+                    <div id="quantum-status" class="status-message"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Quantum Experiments</h3>
+                </div>
+                <div class="card-body">
+                    <div id="experiments-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/quantum-lab.js"></script>
+</body>
+</html>

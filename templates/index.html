@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Reliability Prediction - Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>ML Research</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="active">Dashboard</a></li>
+                <li><a href="/data-upload">Data Upload</a></li>
+                <li><a href="/model-training">Model Training</a></li>
+                <li><a href="/quantum-lab">Quantum Lab</a></li>
+                <li><a href="/federated-learning">Federated Learning</a></li>
+                <li><a href="/monitoring">Monitoring</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Research Dashboard</h1>
+                <p>Advanced software reliability prediction research platform</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>System Health</h3>
+                </div>
+                <div class="card-body">
+                    <div id="health-status" class="health-grid"></div>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="datasets-count">0</div>
+                    <div class="stat-label">Datasets</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🧠</div>
+                    <div class="stat-value" id="models-count">0</div>
+                    <div class="stat-label">ML Models</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚛️</div>
+                    <div class="stat-value" id="quantum-count">0</div>
+                    <div class="stat-label">Quantum Experiments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🌐</div>
+                    <div class="stat-value" id="federated-count">0</div>
+                    <div class="stat-label">Federated Jobs</div>
+                </div>
+            </div>
+
+            <div class="two-column-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Models</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="recent-models"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Quantum Experiments</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="quantum-experiments"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

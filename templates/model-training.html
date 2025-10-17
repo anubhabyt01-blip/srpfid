@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Training - ML Research</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>ML Research</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/data-upload">Data Upload</a></li>
+                <li><a href="/model-training" class="active">Model Training</a></li>
+                <li><a href="/quantum-lab">Quantum Lab</a></li>
+                <li><a href="/federated-learning">Federated Learning</a></li>
+                <li><a href="/monitoring">Monitoring</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Model Training</h1>
+                <p>Train and evaluate ML models</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Train New Model</h3>
+                </div>
+                <div class="card-body">
+                    <form id="training-form">
+                        <div class="form-group">
+                            <label>Model Name</label>
+                            <input type="text" id="model-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Algorithm</label>
+                            <select id="algorithm">
+                                <option value="RandomForest">Random Forest</option>
+                                <option value="XGBoost">XGBoost</option>
+                                <option value="SVM">SVM</option>
+                                <option value="NeuralNetwork">Neural Network</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Dataset</label>
+                            <select id="dataset-select">
+                                <option value="">Select a dataset</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Train Model</button>
+                    </form>
+                    <div id="training-status" class="status-message"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Trained Models</h3>
+                </div>
+                <div class="card-body">
+                    <div id="models-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/model-training.js"></script>
+</body>
+</html>

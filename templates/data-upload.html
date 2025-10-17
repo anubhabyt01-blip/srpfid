@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Upload - ML Research</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>ML Research</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/data-upload" class="active">Data Upload</a></li>
+                <li><a href="/model-training">Model Training</a></li>
+                <li><a href="/quantum-lab">Quantum Lab</a></li>
+                <li><a href="/federated-learning">Federated Learning</a></li>
+                <li><a href="/monitoring">Monitoring</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Dataset Upload</h1>
+                <p>Upload and manage your datasets</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Upload New Dataset</h3>
+                </div>
+                <div class="card-body">
+                    <form id="upload-form" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label>Dataset Name</label>
+                            <input type="text" id="dataset-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="dataset-description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Select File (CSV, JSON)</label>
+                            <input type="file" id="dataset-file" name="file" accept=".csv,.json" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload Dataset</button>
+                    </form>
+                    <div id="upload-status" class="status-message"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Uploaded Datasets</h3>
+                </div>
+                <div class="card-body">
+                    <div id="datasets-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/data-upload.js"></script>
+</body>
+</html>
